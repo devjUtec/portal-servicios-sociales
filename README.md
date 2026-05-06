@@ -33,9 +33,15 @@ node scripts/generate-keys.js
 
 **3. Levantar toda la infraestructura**
 ```bash
-sudo docker compose up -d
+docker compose up -d
 ```
-*(Docker descargará PostgreSQL, Redis, instalará las dependencias de Node.js de la API y de la Web, y levantará todos los servicios).*
+*(Docker descargará PostgreSQL, Redis, instalará las dependencias de Node.js de la API y de la Web, aplicará automáticamente las migraciones de Prisma, y levantará todos los servicios).*
+
+**4. Sembrar la base de datos con datos de prueba (solo la primera vez)**
+```bash
+docker exec servicios-sociales-api npx prisma db seed
+```
+> ⚠️ El seed **borra y repuebla** todas las tablas. Solo córrelo cuando quieras reiniciar los datos demo.
 
 ---
 
@@ -47,20 +53,24 @@ Una vez que Docker termine de levantar todo (puede tardar unos minutos la primer
 - **API (Backend):** [http://localhost:3001](http://localhost:3001)
 - **Documentación de la API (Swagger):** [http://localhost:3001/api/docs](http://localhost:3001/api/docs)
 
+### Credenciales de prueba (generadas por el seed)
+
+| Tipo | Email | Password | Extra |
+|---|---|---|---|
+| Ciudadano | `2916392019@mail.utec.edu.sv` | `Cotizante123!` | Nº Afiliación: `ISS-12345` |
+| Admin (staff) | `admin@ssapi.gob.sv` | `Admin123!` | — |
+
 ---
 
-## 💡 Mantenimiento de la Base de Datos
+## 💡 Operaciones comunes
 
-Si necesitas poblar la base de datos con datos de prueba o aplicar migraciones, puedes hacerlo entrando al contenedor de la API o ejecutando Prisma localmente (si hiciste `npm install`):
-
-```bash
-# Entrar a la carpeta de la api si no lo estás
-cd servicios-sociales-api
-
-# Ejecutar las migraciones y sembrar datos semilla (requiere npm install previo)
-npx prisma migrate dev --name init
-npx prisma db seed
-```
+| Necesidad | Comando |
+|---|---|
+| Aplicar nuevas migraciones | Automático en cada `docker compose up` |
+| Repoblar datos demo | `docker exec servicios-sociales-api npx prisma db seed` |
+| Reiniciar todo desde cero (borra BD) | `docker compose down -v && docker compose up -d` y volver a correr el seed |
+| Ver logs del API | `docker logs -f servicios-sociales-api` |
+| Entrar al contenedor del API | `docker exec -it servicios-sociales-api sh` |
 
 ## 🔐 Configuración de Servicios Externos (Google)
 

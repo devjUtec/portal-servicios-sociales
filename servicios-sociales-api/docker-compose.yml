@@ -80,7 +80,7 @@ services:
       - ./src:/app/src
       - ./prisma:/app/prisma
       - ./swagger-spec.yaml:/app/swagger-spec.yaml
-    command: npm run start:dev
+    command: sh -c "npx prisma migrate deploy && npm run start:dev"
     networks:
       - app-network
 

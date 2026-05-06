@@ -62,24 +62,26 @@ node scripts/generate-keys.js
 ### 5. Levantar infraestructura (Docker)
 Asegúrate de que Docker Desktop esté corriendo y ejecuta:
 ```bash
-docker-compose up -d
+docker compose up -d
 ```
+> El contenedor del API ejecuta automáticamente `npx prisma migrate deploy` al arrancar, así que **no necesitas correr migraciones a mano**.
 
-### 6. Base de Datos: Migraciones y Seed
+### 6. Sembrar datos de prueba (solo la primera vez)
 ```bash
-# Aplicar esquema a la base de datos
-npx prisma migrate dev --name init
-
-# Generar cliente de Prisma
-npx prisma generate
-
-# Poblar base de datos con datos de prueba
-npx prisma db seed
+docker exec servicios-sociales-api npx prisma db seed
 ```
+> ⚠️ El seed **borra y repuebla** todas las tablas. Solo córrelo cuando quieras reiniciar los datos demo.
+
+#### Credenciales que crea el seed
+| Tipo | Email | Password | Extra |
+|---|---|---|---|
+| Ciudadano | `2916392019@mail.utec.edu.sv` | `Cotizante123!` | Nº Afiliación: `ISS-12345` |
+| Admin (staff) | `admin@ssapi.gob.sv` | `Admin123!` | — |
 
 ### 💡 Tips de Mantenimiento de BD
-- **Si solo cambiaste datos en `seed.ts`**: Ejecuta `npx prisma db seed` para actualizar la información sin borrar esquemas.
-- **Si cambiaste la estructura (`schema.prisma`)**: Usa `npx prisma migrate reset --force`. Esto borrará todo, recreará las tablas y ejecutará el seed automáticamente.
+- **Si solo cambiaste datos en `seed.ts`**: Ejecuta `docker exec servicios-sociales-api npx prisma db seed` para actualizar la información sin borrar esquemas.
+- **Si cambiaste la estructura (`schema.prisma`)**: Crea una nueva migración con `docker exec servicios-sociales-api npx prisma migrate dev --name <nombre>`. La próxima vez que el contenedor arranque, `migrate deploy` la aplicará automáticamente.
+- **Reset total**: `docker compose down -v && docker compose up -d`, luego volver a correr el seed.
 
 ---
 
@@ -97,10 +99,10 @@ Para que el archivo `swagger-spec.yaml` se sincronice correctamente con tu entor
       - ./src:/app/src
       - ./prisma:/app/prisma
       - ./swagger-spec.yaml:/app/swagger-spec.yaml
-    command: npm run start:dev
+    command: sh -c "npx prisma migrate deploy && npm run start:dev"
 ```
 
-La API estará disponible en: [http://localhost:3000](http://localhost:3000)
+La API estará disponible en: [http://localhost:3001](http://localhost:3001)
 
 ---
 

@@ -325,7 +325,7 @@ export class AuthService {
         // --- PASO OTP (Simulado sin SMTP) ---
         // 1. Generar código de 6 dígitos
         const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
-        
+
         // Log para entorno de desarrollo (No se envía en la respuesta)
         if (process.env.NODE_ENV !== 'production') {
             console.log(`[Seguridad] OTP Generado para ${citizen.email}: ${otpCode}`);
@@ -558,7 +558,7 @@ export class AuthService {
         let userId: string | null = null;
         let citizenId: string | null = null;
         let email: string | null = null;
-        
+
         let refreshToken: any = await this.prisma.refreshToken.findUnique({
             where: { token },
             include: { user: true }
@@ -621,21 +621,12 @@ export class AuthService {
         };
     }
 
-    private cleanupCaptchas() {
-        const now = Date.now();
-        for (const [id, data] of this.visualCaptchas.entries()) {
-            if (data.expires < now) {
-                this.visualCaptchas.delete(id);
-            }
-        }
-    }
-
     async validateCaptcha(token?: string, answer?: string, id?: string): Promise<boolean> {
         // --- MODO DESARROLLADOR / MASTER KEY ---
         // Esto permite pruebas fáciles en Postman sin comprometer la seguridad de producción
         const isDev = process.env.NODE_ENV !== 'production';
         const masterKey = '777-DEMO-MASTER-KEY'; // Esto debería estar en .env idealmente
-        
+
         if (isDev && token === masterKey) {
             console.log('[SEGURIDAD] Bypass de CAPTCHA detectado mediante Master Key');
             return true;
@@ -644,13 +635,13 @@ export class AuthService {
         // 1. Validar CAPTCHA Visual (Letras) si se proporciona
         if (answer && id) {
             const storedCode = await this.redisClient.get(`captcha:${id}`);
-            
+
             if (!storedCode) return false;
 
             if (storedCode !== answer.toLowerCase()) {
                 return false;
             }
-            
+
             // Consumir el captcha para que no se use dos veces
             await this.redisClient.del(`captcha:${id}`);
             return true;
@@ -660,11 +651,11 @@ export class AuthService {
         try {
             if (!token) return false;
             const secretKey = this.configService.get<string>('RECAPTCHA_SECRET_KEY');
-            
+
             // Si no hay secret key (ej: local sin config), solo validamos por letras
             if (!secretKey) {
                 console.warn('[SEGURIDAD] RECAPTCHA_SECRET_KEY no configurado, validando solo manual');
-                return false; 
+                return false;
             }
 
             const response = await fetch(

@@ -121,6 +121,6 @@ jobs:
         uses: zaproxy/action-baseline@v0.12.0
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          target: 'https://api.tu-institucion.gob.sv/api/health' # URL Real de tu despliegue en AWS
+          target: 'http://api-load-balancer-1751329211.us-east-1.elb.amazonaws.com/api/health'
           rules_file_name: '.zap/rules.tsv'
           fail_action: false

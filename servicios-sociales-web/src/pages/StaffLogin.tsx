@@ -48,6 +48,17 @@ const StaffLoginPage: React.FC = () => {
         }
     }, [otpStep, fetchCaptcha]);
 
+    // Capturar errores de OAuth desde la URL
+    React.useEffect(() => {
+        const errorParam = searchParams.get('error');
+        if (errorParam) {
+            setError(decodeURIComponent(errorParam));
+            // Limpiar la URL para evitar que el error persista en refrescos manuales
+            const newUrl = window.location.pathname;
+            window.history.replaceState({}, '', newUrl);
+        }
+    }, [searchParams]);
+
     const handleLogin = useCallback(async (e: React.FormEvent) => {
         e.preventDefault();
         if (!executeRecaptcha) return;
@@ -92,7 +103,9 @@ const StaffLoginPage: React.FC = () => {
 
     const handleGoogleLogin = () => {
         const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3001';
-        window.location.href = `${apiUrl}/oauth/google`;
+        // Quitamos /api si existe para que las rutas de OAuth (que están excluidas del prefijo) funcionen
+        const baseUrl = apiUrl.endsWith('/api') ? apiUrl.slice(0, -4) : apiUrl;
+        window.location.href = `${baseUrl}/oauth/google`;
     };
 
     return (

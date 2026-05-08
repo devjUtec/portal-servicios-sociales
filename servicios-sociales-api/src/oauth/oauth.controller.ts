@@ -1,10 +1,12 @@
-import { Controller, Get, UseGuards, Req, Res } from '@nestjs/common';
+import { Controller, Get, UseGuards, Req, Res, UseFilters } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import type { Response } from 'express';
+import { OAuthExceptionFilter } from './filters/oauth-exception.filter';
 
 @ApiTags('oauth')
 @Controller('oauth')
+@UseFilters(OAuthExceptionFilter)
 export class OAuthController {
 
     /** Iniciar sesión con Google */

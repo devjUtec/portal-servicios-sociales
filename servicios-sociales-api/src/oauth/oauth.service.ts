@@ -27,7 +27,7 @@ export class OAuthService {
         }
 
         // 3. RESTRICCIÓN DE PERSONAL: Solo staff administrativo o médico.
-        const staffRoles = ['admin', 'superadmin', 'doctor', 'staff'];
+        const staffRoles = ['admin', 'super_admin', 'superadmin', 'doctor', 'staff', 'institution_staff'];
         const hasStaffRole = user.roles.some((ur: any) => 
             staffRoles.includes(ur.role.name.toLowerCase())
         );

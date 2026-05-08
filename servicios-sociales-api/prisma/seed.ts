@@ -84,6 +84,23 @@ async function main() {
                 roleId: adminRole.id,
             },
         });
+
+        const myUser = await prisma.user.create({
+            data: {
+                email: 'juanneperez17@gmail.com',
+                passwordHash: hashedAdminPassword,
+                firstName: 'Jair',
+                lastName: 'Urquia',
+                isVerified: true,
+            },
+        });
+
+        await prisma.userRole.create({
+            data: {
+                userId: myUser.id,
+                roleId: adminRole.id,
+            },
+        });
     }
 
     // Create 3 Doctors

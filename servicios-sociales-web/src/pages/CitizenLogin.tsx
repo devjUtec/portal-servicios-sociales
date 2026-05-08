@@ -56,7 +56,7 @@ const CitizenLoginPage: React.FC = () => {
         setLoading(true);
         setError('');
         try {
-            const captchaToken = await executeRecaptcha('citizen_login');
+            const captchaToken = await executeRecaptcha('login');
             const result = await citizenLogin({
                 email,
                 password,
@@ -77,7 +77,7 @@ const CitizenLoginPage: React.FC = () => {
         } finally {
             setLoading(false);
         }
-    }, [executeRecaptcha, citizenLogin, email, password, affiliation]);
+    }, [executeRecaptcha, citizenLogin, email, password, affiliation, captchaAnswer, captchaId]);
 
     const handleVerifyOtp = async (e: React.FormEvent) => {
         e.preventDefault();

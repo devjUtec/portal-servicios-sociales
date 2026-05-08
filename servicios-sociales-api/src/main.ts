@@ -11,6 +11,7 @@ const cookieParser = require('cookie-parser');
 import { AppModule } from './app.module';
 import { AllExceptionsFilter } from './common/filters/http-exception.filter';
 import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
+import { OAuthExceptionFilter } from './oauth/filters/oauth-exception.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -23,7 +24,7 @@ async function bootstrap() {
   // Global prefix para coincidir con la regla /api/* del Load Balancer
   // Excluimos /health para que el health check del ALB siga funcionando
   app.setGlobalPrefix('api', { 
-    exclude: ['/health', '/oauth/(.*)'] 
+    exclude: ['/health'] 
   });
 
   app.use(cookieParser());
@@ -80,7 +81,7 @@ async function bootstrap() {
     }),
   );
 
-  app.useGlobalFilters(new AllExceptionsFilter());
+  app.useGlobalFilters(new AllExceptionsFilter(), new OAuthExceptionFilter());
   app.useGlobalInterceptors(new LoggingInterceptor());
 
   // ============================================

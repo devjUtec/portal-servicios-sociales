@@ -45,10 +45,15 @@ const CitizenLoginPage: React.FC = () => {
     }, []);
 
     React.useEffect(() => {
+        const errorParam = searchParams.get('error');
+        if (errorParam) {
+            setError(decodeURIComponent(errorParam));
+        }
+
         if (!otpStep) {
             fetchCaptcha();
         }
-    }, [otpStep, fetchCaptcha]);
+    }, [otpStep, fetchCaptcha, searchParams]);
 
     const handleLogin = useCallback(async (e: React.FormEvent) => {
         e.preventDefault();

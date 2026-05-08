@@ -24,7 +24,7 @@ async function bootstrap() {
   // Global prefix para coincidir con la regla /api/* del Load Balancer
   // Excluimos /health para que el health check del ALB siga funcionando
   app.setGlobalPrefix('api', { 
-    exclude: ['/health', '/oauth/(.*)'] 
+    exclude: ['/health'] 
   });
 
   app.use(cookieParser());

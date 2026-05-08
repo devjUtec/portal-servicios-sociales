@@ -103,7 +103,7 @@ const StaffLoginPage: React.FC = () => {
 
     const handleGoogleLogin = () => {
         const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3001';
-        // Quitamos /api si existe para que las rutas de OAuth (que están excluidas del prefijo) funcionen
+        // Quitamos /api si existe: OAuth está excluido del prefijo global tanto en local como en AWS
         const baseUrl = apiUrl.endsWith('/api') ? apiUrl.slice(0, -4) : apiUrl;
         window.location.href = `${baseUrl}/oauth/google`;
     };

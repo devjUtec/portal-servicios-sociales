@@ -82,7 +82,7 @@ async function bootstrap() {
   );
 
 
-  app.useGlobalFilters(new OAuthExceptionFilter(), new AllExceptionsFilter());
+  app.useGlobalFilters(new AllExceptionsFilter(), new OAuthExceptionFilter());
   app.useGlobalInterceptors(new LoggingInterceptor());
 
   // ============================================

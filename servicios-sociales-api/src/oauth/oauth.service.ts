@@ -15,9 +15,9 @@ export class OAuthService {
         // 1. Buscar si el usuario ya existe por email y traer sus roles
         const user = await this.prisma.user.findUnique({
             where: { email },
-            include: { 
+            include: {
                 roles: { include: { role: true } },
-                oauthIdentities: true 
+                oauthIdentities: true
             },
         });
 
@@ -28,7 +28,7 @@ export class OAuthService {
 
         // 3. RESTRICCIÓN DE PERSONAL: Solo staff administrativo o médico.
         const staffRoles = ['admin', 'super_admin', 'superadmin', 'doctor', 'staff', 'institution_staff'];
-        const hasStaffRole = user.roles.some((ur: any) => 
+        const hasStaffRole = user.roles.some((ur: any) =>
             staffRoles.includes(ur.role.name.toLowerCase())
         );
 
@@ -46,9 +46,9 @@ export class OAuthService {
             // Y activamos la cuenta automáticamente si era una invitación
             await this.prisma.user.update({
                 where: { id: user.id },
-                data: { 
-                    isActive: true, 
-                    isVerified: true 
+                data: {
+                    isActive: true,
+                    isVerified: true
                 }
             });
 
